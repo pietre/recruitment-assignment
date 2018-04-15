@@ -1,6 +1,6 @@
 <?php
 
-namespace Gwo\Recruitment\Cart;
+namespace Gwo\Recruitment\Cart\Exception;
 
 class ItemNotFoundException extends \OutOfBoundsException
 {

@@ -46,18 +46,13 @@ class Cart
         return $this->totalPrice->value();
     }
 
-    private function updateTotalPrice()
+    public function setQuantity(Product $product, int $quantity)
     {
-        $this->totalPrice = new Price($this->calculateTotalPrice());
+        $this->items->setProductQuantity($product, $quantity);
     }
 
-    private function calculateTotalPrice(): int
+    private function updateTotalPrice()
     {
-        $totalPrice = 0;
-        foreach ($this->items as $item) {
-            $totalPrice += $item->getTotalPrice();
-        }
-
-        return $totalPrice;
+        $this->totalPrice = new Price($this->items->getTotalPrice());
     }
 }
