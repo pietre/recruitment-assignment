@@ -54,6 +54,7 @@ class Item
     {
         $this->totalPrice = new Price($this->calculateTotalPrice());
     }
+
     private function calculateTotalPrice(): int
     {
         return $this->quantity->value() * $this->product->getUnitPrice();
