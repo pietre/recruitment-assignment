@@ -10,6 +10,7 @@ class Product
     private const DEFAULT_MINIMUM_QUANTITY = 1;
     private const DEFAULT_UNIT_PRICE = 1;
 
+    private $id;
     private $minimumQuantity;
     private $unitPrice;
 
@@ -17,6 +18,13 @@ class Product
     {
         $this->setMinimumQuantity(self::DEFAULT_MINIMUM_QUANTITY);
         $this->setUnitPrice(self::DEFAULT_UNIT_PRICE);
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function setMinimumQuantity(int $minimumQuantity): self
@@ -31,6 +39,11 @@ class Product
         $this->unitPrice = new Price($unitPrice);
 
         return $this;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     public function getMinimumQuantity(): int
