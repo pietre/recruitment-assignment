@@ -12,27 +12,31 @@ class Cart
 
     public function __construct()
     {
-        $this->items = [];
+        $this->items = new ItemCollection();
         $this->totalPrice = 0;
     }
 
     public function addProduct(Product $product, int $quantity): self
     {
         $item = new Item($product, $quantity);
-        $this->items[] = $item;
+        $this->items->add($item);
         $this->updateTotalPrice();
 
         return $this;
     }
 
-    public function getItem(int $index): Item
+    public function removeProduct(Product $product)
     {
-        $this->validateItemExists($index);
-
-        return $this->items[$index];
+        $this->items->removeProduct($product);
+        $this->updateTotalPrice();
     }
 
-    public function getItems(): array
+    public function getItem(int $index): Item
+    {
+        return $this->items->get($index);
+    }
+
+    public function getItems(): ItemCollection
     {
         return $this->items;
     }
@@ -55,12 +59,5 @@ class Cart
         }
 
         return $totalPrice;
-    }
-
-    private function validateItemExists(int $index): void
-    {
-        if (!isset($this->items[$index])) {
-            throw new ItemNotFoundException($index);
-        }
     }
 }

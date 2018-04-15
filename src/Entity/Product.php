@@ -20,6 +20,11 @@ class Product
         $this->setUnitPrice(self::DEFAULT_UNIT_PRICE);
     }
 
+    public function equals(Product $product): bool
+    {
+        return $this->id === $product->id;
+    }
+
     public function setId(int $id): self
     {
         $this->id = $id;
