@@ -7,16 +7,18 @@ use Gwo\Recruitment\ValueObject\Price\Price;
 
 class Cart
 {
+    private const DEFAULT_TOTAL_PRICE = 0;
+
     private $items;
     private $totalPrice;
 
     public function __construct()
     {
         $this->items = new ItemCollection();
-        $this->totalPrice = 0;
+        $this->totalPrice = new Price(self::DEFAULT_TOTAL_PRICE);
     }
 
-    public function addProduct(Product $product, int $quantity): self
+    public function addProduct(Product $product, $quantity): self
     {
         $item = new Item($product, $quantity);
         $this->items->add($item);
@@ -25,15 +27,22 @@ class Cart
         return $this;
     }
 
-    public function removeProduct(Product $product)
+    public function removeProduct(Product $product): void
     {
-        $this->items->removeProduct($product);
+        $this->items->removeByProduct($product);
         $this->updateTotalPrice();
     }
 
-    public function getItem(int $index): Item
+    public function setQuantity(Product $product, int $quantity): void
     {
-        return $this->items->get($index);
+        $item = new Item($product, $quantity);
+        $this->items->update($item);
+        $this->updateTotalPrice();
+    }
+
+    public function getItem(int $itemIndex): Item
+    {
+        return $this->items->get($itemIndex);
     }
 
     public function getItems(): ItemCollection
@@ -46,13 +55,18 @@ class Cart
         return $this->totalPrice->value();
     }
 
-    public function setQuantity(Product $product, int $quantity)
+    private function updateTotalPrice(): void
     {
-        $this->items->setProductQuantity($product, $quantity);
+        $this->totalPrice = new Price($this->calculateTotalPrice());
     }
 
-    private function updateTotalPrice()
+    private function calculateTotalPrice(): int
     {
-        $this->totalPrice = new Price($this->items->getTotalPrice());
+        $totalPrice = 0;
+        foreach ($this->items->toArray() as $item) {
+            $totalPrice += $item->getTotalPrice();
+        }
+
+        return $totalPrice;
     }
 }

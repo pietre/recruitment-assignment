@@ -5,6 +5,7 @@ namespace Gwo\Recruitment\ValueObject\Quantity;
 class Quantity
 {
     private const MINIMUM_VALID_VALUE = 1;
+
     private $value;
 
     public function __construct(int $value)
