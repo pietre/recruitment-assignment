@@ -14,72 +14,67 @@ class ItemCollection implements \Countable
         $this->items = [];
     }
 
-    public function add(Item $addedItem)
+    public function add(Item $item): void
+    {
+        foreach ($this->items as $existingItem) {
+            if ($item->getProduct()->equals($existingItem->getProduct())) {
+                $existingItem->setQuantity($item->getQuantity() + $existingItem->getQuantity());
+
+                return;
+            }
+        }
+        $this->items[] = $item;
+    }
+
+    public function get(int $itemIndex): Item
+    {
+        $this->validateItemExists($itemIndex);
+
+        return $this->items[$itemIndex];
+    }
+
+    public function update(Item $item): void
+    {
+        foreach ($this->items as $existingItem) {
+            if ($item->getProduct()->equals($existingItem->getProduct())) {
+                $existingItem->setQuantity($item->getQuantity());
+
+                return;
+            }
+        }
+        $this->items[] = $item;
+    }
+
+    public function removeByProduct(Product $product): void
     {
         foreach ($this->items as $index => $existingItem) {
-            if ($addedItem->getProduct()->equals($existingItem->getProduct())) {
-                $existingItem->setQuantity($existingItem->getQuantity() + $addedItem->getQuantity());
-                return;
-            }
-        }
-
-        $this->items[] = $addedItem;
-    }
-
-    public function get(int $index): Item
-    {
-        $this->validateItemExists($index);
-
-        return $this->items[$index];
-    }
-
-    public function removeProduct(Product $product): void
-    {
-        foreach ($this->items as $index => $item) {
-            if ($product->equals($item->getProduct())) {
+            if ($product->equals($existingItem->getProduct())) {
                 $this->removeFromIndex($index);
+
                 return;
             }
         }
     }
 
-    public function count(): int
+    public function count()
     {
         return \count($this->items);
     }
 
-    public function getTotalPrice(): int
+    public function toArray()
     {
-        $totalPrice = 0;
-        foreach ($this->items as $item) {
-            $totalPrice += $item->getTotalPrice();
-        }
-
-        return $totalPrice;
+        return $this->items;
     }
 
-    public function setProductQuantity(Product $product, int $quantity)
+    private function validateItemExists(int $itemIndex): void
     {
-        foreach ($this->items as $index => $item) {
-            if ($product->equals($item->getProduct())) {
-                $item->setQuantity($quantity);
-
-                return;
-            }
+        if (!isset($this->items[$itemIndex])) {
+            throw new ItemNotFoundException($itemIndex);
         }
     }
 
-    private function validateItemExists(int $index): void
+    private function removeFromIndex(int $index): void
     {
-        var_dump($index);
-        if (!isset($this->items[$index])) {
-            throw new ItemNotFoundException($index);
-        }
+        \array_splice($this->items, $index, 1);
     }
-
-    private function removeFromIndex($index): array
-    {
-        return array_splice($this->items, $index, 1);
-    }
-
 }
