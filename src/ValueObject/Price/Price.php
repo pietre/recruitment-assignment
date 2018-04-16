@@ -4,7 +4,8 @@ namespace Gwo\Recruitment\ValueObject\Price;
 
 class Price
 {
-    private const MINIMUM_VALID_VALUE = 1;
+    private const MINIMUM_VALID_VALUE = 0;
+
     private $value;
 
     public function __construct(int $value)

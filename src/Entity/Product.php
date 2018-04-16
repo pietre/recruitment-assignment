@@ -9,6 +9,7 @@ class Product
 {
     private const DEFAULT_MINIMUM_QUANTITY = 1;
     private const DEFAULT_UNIT_PRICE = 1;
+    private const MINIMUM_UNIT_PRICE = 1;
 
     private $id;
     private $minimumQuantity;
@@ -18,11 +19,6 @@ class Product
     {
         $this->setMinimumQuantity(self::DEFAULT_MINIMUM_QUANTITY);
         $this->setUnitPrice(self::DEFAULT_UNIT_PRICE);
-    }
-
-    public function equals(Product $product): bool
-    {
-        return $this->id === $product->id;
     }
 
     public function setId(int $id): self
@@ -41,9 +37,15 @@ class Product
 
     public function setUnitPrice(int $unitPrice): self
     {
+        $this->validateUnitPrice($unitPrice);
         $this->unitPrice = new Price($unitPrice);
 
         return $this;
+    }
+
+    public function equals(Product $product): bool
+    {
+        return $this->id === $product->id;
     }
 
     public function getId(): int
@@ -59,5 +61,12 @@ class Product
     public function getUnitPrice(): int
     {
         return $this->unitPrice->value();
+    }
+
+    private function validateUnitPrice(int $unitPrice): void
+    {
+        if ($unitPrice < self::MINIMUM_UNIT_PRICE) {
+            throw new InvalidUnitPriceException();
+        }
     }
 }
